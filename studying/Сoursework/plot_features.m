@@ -13,3 +13,7 @@ grid on;
 for i = 1:length(labels)
     scatter(F(Y(indx) == labels(i), 1), F(Y(indx) == labels(i), 2), 'x','LineWidth',1.5);
 end
+
+legend('No whale', 'whale');
+xlabel('curve max / curve mean');
+ylabel('sum(abs(diff(value(:,1))))/length(value(:,1))');

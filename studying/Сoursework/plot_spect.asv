@@ -16,10 +16,7 @@ xlabel('Time (Seconds)'); ylabel('Hz');
  mF = F(1) + (F(2) - F(1)) * (mF - 1);
  plot(T, mF, 'LineWidth', 1.5);
  grid on;
- hold on;
- plot(T, medfilt1(mF,5),'r', 'LineWidth', 1.5);
- xlabel('Time (Seconds)'); ylabel('Max amplitude frequency');
- hold off;
+ xlabel('Time (Seconds)'); ylabel('Amplitude ([250Hz)');
 
 FrBegin = 2;
 FrEnd = 29;
