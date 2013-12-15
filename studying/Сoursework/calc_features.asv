@@ -28,7 +28,7 @@ end
 E = sum(value(:,1))/length(value(:,1));
 f1 = max(value(:,1)) / E;
 %E = sum(value(:,2))/length(value(:,2));
-f2 = sum(value(:,1)) / length(value(:,1));
+f2 = sum(abs(diff(value(:,1))))/length(value(:,1));
 
 end
 

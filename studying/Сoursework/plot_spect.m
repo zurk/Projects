@@ -6,13 +6,14 @@ function [] = plot_spect( X )
 [~,F,T,P] = spectrogram(X,128,120,512,2000);
 F = F(25:129); % Hz from 93.75 to 500
 P = P(25:129,:);
-subplot(3,1,1);
-surf(T,F,10*log10(P),'edgecolor','none'); axis tight; 
+subplot(3,2,1);
+P = 10*log10(P);
+surf(T,F,P,'edgecolor','none'); axis tight; 
 view(0,90);
 xlabel('Time (Seconds)'); ylabel('Hz');
 
- subplot(3,1,3);
- [~, mF] = max(10*log10(P),[], 1);
+ subplot(3,2,5);
+ [~, mF] = max(P,[], 1);
  mF = F(1) + (F(2) - F(1)) * (mF - 1);
  plot(T, mF, 'LineWidth', 1.5);
  grid on;
@@ -41,7 +42,7 @@ for tBegin = 1:length(T)-50
 %     value(tBegin, 4) = quantile(P(mask == 1), 0.9) - quantile(P(mask == 1), 0.1);
 end
 
-subplot(3,1,2);
+subplot(3,2,3);
 plot(T(1:end), value(:,[1,3]), 'LineWidth', 1.5);
 grid on;
 xlabel('Time (Seconds)'); ylabel('mean value in window');
@@ -51,7 +52,16 @@ xlabel('Time (Seconds)'); ylabel('mean value in window');
 % grid on;
 % xlabel('Time (Seconds)'); ylabel('max-min value in window');
 
-subplot(3,1,1);
+subplot(3,2,2);
+[~, tBegin] = max(value(:,1));
+tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
+mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
+Q = mask .* P;
+Q = sum(Q, 1);
+plot(T, Q, 'LineWidth', 1.5);
+grid on;
+
+subplot(3,2,1);
 hold on;
 [~, tBegin] = max(value(:,1));
 tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));

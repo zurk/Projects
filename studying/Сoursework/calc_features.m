@@ -26,8 +26,13 @@ for tBegin = 1:length(T)-50
 end
 
 E = sum(value(:,1))/length(value(:,1));
-f1 = max(value(:,1)) / E;
-%E = sum(value(:,2))/length(value(:,2));
+
+[~, tBegin] = max(value(:,1));
+tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
+mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
+Q = mask .* P;
+Q = sum(Q, 1);
+f1 = sum(Q)/sum(Q~=0);
 f2 = sum(abs(diff(value(:,1))))/length(value(:,1));
 
 end

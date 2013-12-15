@@ -1,5 +1,5 @@
 global D;
-indx = [1:2000];
+indx = [1:200];
 fprintf('      \n');
 F = zeros(length(indx), 2);
 for i = indx
