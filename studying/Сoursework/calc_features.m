@@ -1,4 +1,4 @@
-function [ f1, f2 ] = calc_features( X )
+function [ features ] = calc_features( X )
 %CALC_FEATURES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,6 +6,7 @@ function [ f1, f2 ] = calc_features( X )
 [~,F,T,P] = spectrogram(X,128,120,512,2000);
 F = F(25:129); % Hz from 93.75 to 500
 P = P(25:129,:);
+P = 10 * log10(P);
 
 FrBegin = 2;
 FrEnd = 29;
@@ -19,32 +20,15 @@ for tBegin = 1:length(T)-50
     mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
     Q = mask .* P;
     value(tBegin, 1) = sum(Q(:))/sum(mask(:));
-    %tEnd = min(floor(tBegin + 0.2 /(T(2) - T(1))), length(T));
-    %mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin2], [tEnd, FrEnd2], hight)';
-    %Q = mask .* P;
-    %value(tBegin, 2) = sum(Q(:))/sum(mask(:));
 end
 
-E = sum(value(:,1))/length(value(:,1));
-f2 = sum(abs(diff(value(:,1))))/length(value(:,1));
+[~, tBegin] = max(value(:,1));
+tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
+mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
+Q = mask .* P;
 
-[~, mF] = max(P,[], 1);
-mF = F(1) + (F(2) - F(1)) * (mF - 1);
-windowSize = 10;
-Q = filter(ones(1,windowSize)/windowSize,1,medfilt1(mF,10));
-Q = diff(Q) > 0;
-k=0;
-kmax = 0;
-for i = 1:length(Q)
-    if Q(i)
-        k = k + 1;
-    else if k > kmax
-            kmax = k;
-         end
-         k=0;
-    end
-end
-f1 = kmax;   
-f1 = f1 + max(value(:,1)) / E;
+features = [Q(mask == 1) ; tBegin];
+if(length(features) < 1261)
+    features = [features; zeros(1261 - length(features), 1)];
 end
 
