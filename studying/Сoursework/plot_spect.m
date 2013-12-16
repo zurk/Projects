@@ -6,18 +6,20 @@ function [] = plot_spect( X )
 [~,F,T,P] = spectrogram(X,128,120,512,2000);
 F = F(25:129); % Hz from 93.75 to 500
 P = P(25:129,:);
+P = 10*log10(P);
 subplot(3,1,1);
-surf(T,F,10*log10(P),'edgecolor','none'); axis tight; 
+surf(T,F,P,'edgecolor','none'); axis tight; 
 view(0,90);
 xlabel('Time (Seconds)'); ylabel('Hz');
 
  subplot(3,1,3);
- [~, mF] = max(10*log10(P),[], 1);
+ [~, mF] = max(P,[], 1);
  mF = F(1) + (F(2) - F(1)) * (mF - 1);
  plot(T, mF, 'LineWidth', 1.5);
  grid on;
  hold on;
- plot(T, medfilt1(mF,5),'r', 'LineWidth', 1.5);
+ windowSize = 5;
+ plot(T, filter(ones(1,windowSize)/windowSize,1,medfilt1(mF,10)),'r', 'LineWidth', 1.5);
  xlabel('Time (Seconds)'); ylabel('Max amplitude frequency');
  hold off;
 
