@@ -7,7 +7,7 @@ function [] = plot_spect( X )
 F = F(25:129); % Hz from 93.75 to 500
 P = P(25:129,:);
 subplot(3,2,1);
-P = 10*log10(P);
+P = 10 * log10(P);
 surf(T,F,P,'edgecolor','none'); axis tight; 
 view(0,90);
 xlabel('Time (Seconds)'); ylabel('Hz');
@@ -15,11 +15,12 @@ xlabel('Time (Seconds)'); ylabel('Hz');
  subplot(3,2,5);
  [~, mF] = max(P,[], 1);
  mF = F(1) + (F(2) - F(1)) * (mF - 1);
- plot(T, mF, 'LineWidth', 1.5);
+ plot(T, mF, 'LineWidth', 1);
  grid on;
  hold on;
- plot(T, medfilt1(mF,5),'r', 'LineWidth', 1.5);
- xlabel('Time (Seconds)'); ylabel('Max amplitude frequency');
+ windowSize = 10;
+ plot(T, filter(ones(1,windowSize)/windowSize,1,medfilt1(mF,10)),'r', 'LineWidth', 2);
+ xlabel('Time (Seconds)'); ylabel('Max amplitude frequency(filtering)');
  hold off;
 
 FrBegin = 2;
@@ -58,8 +59,13 @@ tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
 mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
 Q = mask .* P;
 Q = sum(Q, 1);
-plot(T, Q, 'LineWidth', 1.5);
+plot(T, Q, 'LineWidth', 1);
+hold on;
 grid on;
+windowSize = 10;
+plot(T, filter(ones(1,windowSize)/windowSize,1,medfilt1(Q)),'r', 'LineWidth', 2);
+hold off;
+
 
 subplot(3,2,1);
 hold on;
@@ -68,7 +74,7 @@ tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
 plot3(T([tBegin, tEnd, tEnd tBegin tBegin]), F([FrBegin, FrEnd, FrEnd + hight, FrBegin + hight, FrBegin]), [50,50,50,50,50],'LineWidth', 2 );
 [~, tBegin] = max(value(:,3));
 tEnd = min(floor(tBegin + 0.2 /(T(2) - T(1))), length(T));
-plot3(T([tBegin, tEnd, tEnd tBegin tBegin]), F([FrBegin2, FrEnd2, FrEnd2 + hight, FrBegin2 + hight, FrBegin2]), [50,50,50,50,50],'LineWidth', 2 );
+plot3(T([tBegin, tEnd, tEnd tBegin tBegin]), F([FrBegin2, FrEnd2, FrEnd2 + hight, FrBegin2 + hight, FrBegin2]), [50,50,50,50,50],'LineWidth', 1 );
 zlim([-50,50]);
 view(0,90);
 hold off;

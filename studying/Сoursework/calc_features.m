@@ -26,14 +26,25 @@ for tBegin = 1:length(T)-50
 end
 
 E = sum(value(:,1))/length(value(:,1));
-
-[~, tBegin] = max(value(:,1));
-tEnd = min(floor(tBegin + 0.5 /(T(2) - T(1))), length(T));
-mask = get_template([size(P,2), size(P,1)], [tBegin, FrBegin], [tEnd, FrEnd], hight)';
-Q = mask .* P;
-Q = sum(Q, 1);
-f1 = sum(Q)/sum(Q~=0);
 f2 = sum(abs(diff(value(:,1))))/length(value(:,1));
 
+[~, mF] = max(P,[], 1);
+mF = F(1) + (F(2) - F(1)) * (mF - 1);
+windowSize = 10;
+Q = filter(ones(1,windowSize)/windowSize,1,medfilt1(mF,10));
+Q = diff(Q) > 0;
+k=0;
+kmax = 0;
+for i = 1:length(Q)
+    if Q(i)
+        k = k + 1;
+    else if k > kmax
+            kmax = k;
+         end
+         k=0;
+    end
+end
+f1 = kmax;   
+f1 = f1 + max(value(:,1)) / E;
 end
 

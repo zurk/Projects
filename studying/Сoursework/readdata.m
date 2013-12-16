@@ -1,7 +1,7 @@
 Y = importdata('.\data\train.csv');
 Y = Y.data;
 
-D = [];
+D = zeros(30000, 4000);
 fprintf('      \n');
 for i = 1:30000
     filename = ['.\data\train\train' int2str(i) '.aiff'];
