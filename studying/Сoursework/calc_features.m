@@ -53,5 +53,8 @@ for i = 1:length(Q)
     end
 end   
 features(3) = kmax;
+[~, mF] = max(P,[], 1);
+mF = F(1) + (F(2) - F(1)) * (mF - 1);
+features(6:(6+418-43)) = mF(43:418);
 end
 

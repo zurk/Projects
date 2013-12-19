@@ -1,7 +1,7 @@
 Y = importdata('.\data\train.csv');
 Y = Y.data;
 
-D = [];
+D = zeros(30000, 4000);
 fprintf('      \n');
 for i = 1:30000
     filename = ['.\data\train\train' int2str(i) '.aiff'];
@@ -10,3 +10,11 @@ for i = 1:30000
 end
 
 [~,FS,NBITS,CHUNKDATA] = aiffread('.\data\train\train1.aiff');
+
+Dtest = zeros(54503, 4000);
+fprintf('      \n');
+for i = 1:54503
+    filename = ['.\data\test\test' int2str(i) '.aiff'];
+    Dtest(i,:) = aiffread(filename);
+    fprintf('\b\b\b\b\b\b\b%5.2f%%\n', i/545.03);
+end
